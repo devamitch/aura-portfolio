@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Box, LayoutGrid, Trophy, Mail, ArrowUpRight, ArrowUp } from 'lucide-react';
+import { BoxIconPremium, GridIconPremium, TrophyIconPremium, MailIconPremium, ArrowUpRightPremium, ArrowUpPremium } from '../components/PremiumIcons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFirebaseProjects } from '../hooks/useFirebaseProjects';
 import { ProjectCard } from '../components/ProjectCard';
@@ -161,7 +161,7 @@ export function HomeScreen() {
           >
             <div className="flex justify-between items-start mb-4">
               <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center text-primary">
-                <Box size={20} />
+                <BoxIconPremium size={20} />
               </div>
               <span className="text-[10px] text-on-surface-variant font-mono">APP_ID : 0x02</span>
             </div>
@@ -179,7 +179,7 @@ export function HomeScreen() {
           >
             <div className="flex justify-between items-start mb-4">
               <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-white">
-                <LayoutGrid size={20} />
+                <GridIconPremium size={20} />
               </div>
               <span className="text-[10px] text-primary font-bold tracking-widest uppercase">Live Now</span>
             </div>
@@ -195,19 +195,19 @@ export function HomeScreen() {
       <div className="flex justify-center mb-32">
         <div className="flex items-center gap-2 bg-surface-highest border border-white/5 rounded-full p-2 shadow-xl">
           <button className="flex flex-col items-center gap-1 px-6 py-2 text-primary">
-            <Box size={16} />
+            <BoxIconPremium size={16} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Studio</span>
           </button>
           <Link to="/projects" className="flex flex-col items-center gap-1 px-6 py-2 text-on-surface-variant hover:text-white transition-colors">
-            <LayoutGrid size={16} />
+            <GridIconPremium size={16} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Projects</span>
           </Link>
           <button className="flex flex-col items-center gap-1 px-6 py-2 text-on-surface-variant hover:text-white transition-colors">
-            <Trophy size={16} />
+            <TrophyIconPremium size={16} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Awards</span>
           </button>
           <button className="flex flex-col items-center gap-1 px-6 py-2 text-on-surface-variant hover:text-white transition-colors">
-            <Mail size={16} />
+            <MailIconPremium size={16} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Contact</span>
           </button>
         </div>
@@ -341,7 +341,7 @@ export function HomeScreen() {
                 className="group flex items-center gap-3 px-8 py-4 bg-surface-highest border border-white/10 rounded-full text-white font-bold hover:bg-white hover:text-black transition-all duration-300"
               >
                 View All Projects
-                <ArrowUpRight className="group-hover:rotate-45 transition-transform" size={18} />
+                <ArrowUpRightPremium className="group-hover:rotate-45 transition-transform" size={18} />
               </button>
             </div>
           </>
@@ -373,7 +373,7 @@ export function HomeScreen() {
             onClick={scrollToTop}
             className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-primary text-black rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform"
           >
-            <ArrowUp size={20} />
+            <ArrowUpPremium size={20} />
           </motion.button>
         )}
       </AnimatePresence>

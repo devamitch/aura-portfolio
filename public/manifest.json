@@ -1,21 +1,31 @@
 {
   "name": "Aura Architect Portfolio",
-  "short_name": "Aura",
-  "description": "Premium Architectural Portfolio of Aura Architect",
+  "short_name": "Aura Architect",
+  "description": "Premium Architectural Portfolio showcasing minimalist, luxury residential and commercial designs by Aura Architect.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#0f0f0f",
+  "theme_color": "#FBBF24",
+  "orientation": "portrait",
+  "categories": ["architecture", "design", "portfolio"],
   "icons": [
     {
-      "src": "https://picsum.photos/seed/aura-icon-192/192/192",
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://picsum.photos/seed/aura-icon-512/512/512",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
