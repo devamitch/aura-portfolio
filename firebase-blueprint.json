@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "An architectural portfolio project entity",
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string", "description": "The URL-friendly slug for the project" },
+        "metaTitle": { "type": "string", "description": "SEO meta title" },
+        "metaDescription": { "type": "string", "description": "SEO meta description" },
+        "title": { "type": "string", "description": "The title of the project" },
+        "description": { "type": "string", "description": "A short summary of the project" },
+        "longDescription": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "A detailed multi-paragraph description"
+        },
+        "category": { 
+          "type": "string", 
+          "enum": ["Residential", "Commercial", "Cultural", "Industrial"],
+          "description": "The architectural category" 
+        },
+        "location": { "type": "string", "description": "Project location" },
+        "year": { "type": "string", "description": "Year of completion" },
+        "image": { "type": "string", "format": "uri", "description": "Featured image URL" },
+        "imageAlt": { "type": "string", "description": "Alt text for the featured image" },
+        "gallery": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" },
+          "description": "A gallery of project images"
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Project tags"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": { "type": "string" },
+              "url": { "type": "string", "format": "uri" }
+            },
+            "required": ["text", "url"]
+          },
+          "description": "Associated project links"
+        }
+      },
+      "required": ["slug", "title", "description", "longDescription", "category", "location", "year", "image", "tags"]
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "Collection of architectural projects"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Aura Architect | Principal Design Studio",
+  "description": "A premium architectural portfolio showcasing high-end residential and commercial designs by Amit Chakraborty.",
+  "requestFramePermissions": ["camera", "microphone", "geolocation"]
+}

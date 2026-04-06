@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: projects
+    // Document ID: auto-generated or slug
+    // Fields:
+    //   - title: string (required)
+    //   - slug: string (required)
+    //   - sector: string (required)
+    //   - type: string (required)
+    //   - role: string (required)
+    //   - description: string (required)
+    //   - longDescription: list of strings (required)
+    //   - stack: list of strings (required)
+    //   - features: list of maps (optional)
+    //   - links: list of maps (optional)
+    //   - gallery: list of strings (optional)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (request.auth.token.email == "amit98ch@gmail.com" && request.auth.token.email_verified == true);
+    }
+
+    function isValidProject(data) {
+      return data.keys().hasAll(['title', 'slug', 'sector', 'type', 'role', 'description', 'longDescription', 'stack']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 100 &&
+             data.slug is string && data.slug.size() > 0 && data.slug.size() < 100 &&
+             data.sector is string && data.sector.size() > 0 && data.sector.size() < 100 &&
+             data.type is string && data.type.size() > 0 && data.type.size() < 100 &&
+             data.role is string && data.role.size() > 0 && data.role.size() < 100 &&
+             data.description is string && data.description.size() > 0 && data.description.size() < 500 &&
+             data.longDescription is list && data.longDescription.size() > 0 &&
+             data.stack is list && data.stack.size() > 0;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /projects/{projectId} {
+      // Publicly readable for the portfolio
+      allow get, list: if true;
+      
+      // Only the admin (Amit) can create, update, or delete projects
+      allow create: if isAdmin() && isValidProject(request.resource.data);
+      allow update: if isAdmin() && isValidProject(request.resource.data);
+      allow delete: if isAdmin();
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
