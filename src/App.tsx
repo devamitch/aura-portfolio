@@ -14,6 +14,7 @@ import { HomeScreen } from './screens/HomeScreen';
 import { ProjectsScreen } from './screens/ProjectsScreen';
 import { DetailScreen } from './screens/DetailScreen';
 import { AdminScreen } from './screens/AdminScreen';
+import { NotFound } from './screens/NotFound';
 
 // Firebase test
 import { testConnection } from './hooks/useFirebaseProjects';
@@ -55,6 +56,8 @@ export default function App() {
                 <Route path="/projects" element={<ProjectsScreen />} />
                 <Route path="/project/:slug" element={<DetailScreen />} />
                 <Route path="/admin" element={<AdminScreen />} />
+                <Route path="/not-found" element={<NotFound />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </motion.div>
           </AnimatePresence>

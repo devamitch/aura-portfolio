@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Brain, ExternalLink, MapPin, Calendar, Layers, Cpu, Terminal, Zap, ChevronRight, Code } from "lucide-react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { GoogleGenAI } from "@google/genai";
 import { useFirebaseProjects } from "../hooks/useFirebaseProjects";
 import { ProjectCard } from "../components/ProjectCard";
 import { AiDisclaimerModal } from "../components/AiDisclaimerModal";
+import { NotFound } from "./NotFound";
 
 export function DetailScreen() {
   const { slug } = useParams();
@@ -15,6 +16,13 @@ export function DetailScreen() {
   const prevProject = projectIndex > 0 ? projects[projectIndex - 1] : null;
   const nextProject =
     projectIndex < projects.length - 1 ? projects[projectIndex + 1] : null;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !project) {
+      navigate('/not-found', { replace: true });
+    }
+  }, [loading, project, navigate]);
 
   const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
@@ -77,19 +85,7 @@ export function DetailScreen() {
   }
 
   if (!project) {
-    return (
-      <div className="min-h-screen flex items-center justify-center flex-col gap-6 bg-background">
-        <h1 className="text-4xl font-light text-white uppercase tracking-widest">
-          Record Not Found
-        </h1>
-        <Link
-          to="/"
-          className="text-primary hover:underline uppercase tracking-widest text-xs"
-        >
-          Return to Terminal
-        </Link>
-      </div>
-    );
+    return <NotFound />;
   }
 
   return (
@@ -140,7 +136,7 @@ export function DetailScreen() {
       </section>
 
       <section className="max-w-6xl mx-auto px-6 mb-32 relative z-10">
-        <div className="aspect-[21/9] rounded-[2.5rem] overflow-hidden mb-32 border border-white/10 group relative bg-white/5 shadow-2xl">
+        <div className="aspect-21/9 rounded-5xl overflow-hidden mb-32 border border-white/10 group relative bg-white/5 shadow-2xl">
           <img
             src={project.image}
             alt={project.title}
@@ -189,7 +185,7 @@ export function DetailScreen() {
                   {project.features.map((feature, i) => (
                     <div
                       key={i}
-                      className="bg-white/5 p-10 rounded-[2rem] border border-white/5 hover:border-primary/30 transition-all group"
+                      className="bg-white/5 p-10 rounded-4xl border border-white/5 hover:border-primary/30 transition-all group"
                     >
                       <div className="w-12 h-12 rounded-2xl bg-white/5 mb-6 flex items-center justify-center text-white/20 group-hover:text-primary transition-colors">
                          <Zap size={20} />
@@ -219,7 +215,7 @@ export function DetailScreen() {
                   {project.techHighlights.map((highlight, i) => (
                     <div
                       key={i}
-                      className="flex items-start gap-4 p-6 bg-white/[0.02] border border-white/5 rounded-2xl hover:border-primary/20 transition-all group"
+                      className="flex items-start gap-4 p-6 bg-white/2 border border-white/5 rounded-2xl hover:border-primary/20 transition-all group"
                     >
                       <Code size={16} className="text-primary/50 mt-0.5 shrink-0 group-hover:text-primary transition-colors" />
                       <p className="text-white/50 text-sm leading-relaxed">{highlight}</p>
@@ -243,7 +239,7 @@ export function DetailScreen() {
                     <motion.div
                       key={i}
                       whileHover={{ scale: 1.02 }}
-                      className="aspect-4/3 rounded-[2rem] overflow-hidden border border-white/10 bg-white/5"
+                      className="aspect-4/3 rounded-4xl overflow-hidden border border-white/10 bg-white/5"
                     >
                       <img
                         src={img}
