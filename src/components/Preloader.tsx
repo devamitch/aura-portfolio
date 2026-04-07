@@ -42,22 +42,22 @@ export function Preloader() {
   return (
     <div 
       ref={containerRef}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black text-white"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background text-white"
       id="preloader"
     >
       <div className="relative overflow-hidden">
         <div ref={textRef} className="text-4xl md:text-6xl font-light tracking-widest uppercase mb-8">
-          Aura Architect
+          Amit Chakraborty
         </div>
       </div>
-      <div className="w-64 h-[1px] bg-white/20 relative">
+      <div className="w-64 h-px bg-white/20 relative">
         <div 
           ref={progressRef}
           className="absolute inset-0 bg-white origin-left"
         />
       </div>
       <div className="mt-4 text-[10px] tracking-[0.3em] uppercase text-white/40">
-        Principal Design Studio
+        Product Engineering @ Scale
       </div>
     </div>
   );

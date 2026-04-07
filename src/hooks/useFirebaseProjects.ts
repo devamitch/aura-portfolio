@@ -1,19 +1,31 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { collection, getDocs, query, orderBy, addDoc, getDocFromServer, doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db, auth } from '../firebase';
-import { Project as ProjectData, projects as initialProjects } from '../data/projects';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocFromServer,
+  getDocs,
+  query,
+  updateDoc,
+} from "firebase/firestore";
+import {
+  Project as ProjectData,
+  projects as localProjects,
+} from "../data/projects";
+import { auth, db } from "../firebase";
 
 export type Project = ProjectData & { id: string };
 
-const PROJECTS_COLLECTION = 'projects';
+const PROJECTS_COLLECTION = "projects";
 
 export enum OperationType {
-  CREATE = 'create',
-  UPDATE = 'update',
-  DELETE = 'delete',
-  LIST = 'list',
-  GET = 'get',
-  WRITE = 'write',
+  CREATE = "create",
+  UPDATE = "update",
+  DELETE = "delete",
+  LIST = "list",
+  GET = "get",
+  WRITE = "write",
 }
 
 export interface FirestoreErrorInfo {
@@ -32,10 +44,14 @@ export interface FirestoreErrorInfo {
       email: string | null;
       photoUrl: string | null;
     }[];
-  }
+  };
 }
 
-export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+export function handleFirestoreError(
+  error: unknown,
+  operationType: OperationType,
+  path: string | null,
+) {
   const errInfo: FirestoreErrorInfo = {
     error: error instanceof Error ? error.message : String(error),
     authInfo: {
@@ -44,25 +60,29 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
       emailVerified: auth.currentUser?.emailVerified,
       isAnonymous: auth.currentUser?.isAnonymous,
       tenantId: auth.currentUser?.tenantId,
-      providerInfo: auth.currentUser?.providerData.map(provider => ({
-        providerId: provider.providerId,
-        displayName: provider.displayName,
-        email: provider.email,
-        photoUrl: provider.photoURL
-      })) || []
+      providerInfo:
+        auth.currentUser?.providerData.map((provider) => ({
+          providerId: provider.providerId,
+          displayName: provider.displayName,
+          email: provider.email,
+          photoUrl: provider.photoURL,
+        })) || [],
     },
     operationType,
-    path
-  }
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
+    path,
+  };
+  console.error("Firestore Error: ", JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
 }
 
 export async function testConnection() {
   try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
+    await getDocFromServer(doc(db, "test", "connection"));
   } catch (error) {
-    if(error instanceof Error && error.message.includes('the client is offline')) {
+    if (
+      error instanceof Error &&
+      error.message.includes("the client is offline")
+    ) {
       console.error("Please check your Firebase configuration. ");
     }
   }
@@ -71,44 +91,56 @@ export async function testConnection() {
 export function useFirebaseProjects() {
   const queryClient = useQueryClient();
 
-  const { data: projects, isLoading, error } = useQuery({
-    queryKey: ['projects'],
+  const {
+    data: projectsData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["projects"],
     queryFn: async () => {
       try {
         const q = query(collection(db, PROJECTS_COLLECTION));
         const querySnapshot = await getDocs(q);
-        
+
         if (querySnapshot.empty) {
-          console.log('Seeding database with initial projects...');
-          const seedPromises = initialProjects.map(project => 
-            addDoc(collection(db, PROJECTS_COLLECTION), project)
+          console.log("Seeding database with initial projects...");
+          const seedPromises = localProjects.map((project) =>
+            addDoc(collection(db, PROJECTS_COLLECTION), project),
           );
           await Promise.all(seedPromises);
-          
+
           const reQ = query(collection(db, PROJECTS_COLLECTION));
           const reSnapshot = await getDocs(reQ);
-          return reSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+          return reSnapshot.docs.map(
+            (doc) => ({ id: doc.id, ...doc.data() }) as Project,
+          );
         }
 
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Project));
+        return querySnapshot.docs.map(
+          (doc) => ({ id: doc.id, ...doc.data() }) as Project,
+        );
       } catch (error) {
         handleFirestoreError(error, OperationType.LIST, PROJECTS_COLLECTION);
         return [];
       }
     },
+    initialData: localProjects as Project[],
   });
 
   const addProject = useMutation({
-    mutationFn: async (newProject: Omit<Project, 'id'>) => {
+    mutationFn: async (newProject: Omit<Project, "id">) => {
       try {
-        const docRef = await addDoc(collection(db, PROJECTS_COLLECTION), newProject);
+        const docRef = await addDoc(
+          collection(db, PROJECTS_COLLECTION),
+          newProject,
+        );
         return { id: docRef.id, ...newProject };
       } catch (error) {
         handleFirestoreError(error, OperationType.CREATE, PROJECTS_COLLECTION);
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
 
@@ -120,11 +152,15 @@ export function useFirebaseProjects() {
         await updateDoc(docRef, data);
         return updatedProject;
       } catch (error) {
-        handleFirestoreError(error, OperationType.UPDATE, `${PROJECTS_COLLECTION}/${updatedProject.id}`);
+        handleFirestoreError(
+          error,
+          OperationType.UPDATE,
+          `${PROJECTS_COLLECTION}/${updatedProject.id}`,
+        );
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
 
@@ -135,20 +171,54 @@ export function useFirebaseProjects() {
         await deleteDoc(docRef);
         return id;
       } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, `${PROJECTS_COLLECTION}/${id}`);
+        handleFirestoreError(
+          error,
+          OperationType.DELETE,
+          `${PROJECTS_COLLECTION}/${id}`,
+        );
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+
+  const resetToDefaults = useMutation({
+    mutationFn: async () => {
+      try {
+        const q = query(collection(db, PROJECTS_COLLECTION));
+        const querySnapshot = await getDocs(q);
+
+        // Delete all existing projects
+        const deletePromises = querySnapshot.docs.map((doc) =>
+          deleteDoc(doc.ref),
+        );
+        await Promise.all(deletePromises);
+
+        // Re-seed with initialProjects
+        const seedPromises = localProjects.map((project) =>
+          addDoc(collection(db, PROJECTS_COLLECTION), project),
+        );
+        await Promise.all(seedPromises);
+
+        return true;
+      } catch (error) {
+        handleFirestoreError(error, OperationType.WRITE, PROJECTS_COLLECTION);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
 
   return {
-    projects,
+    projects: localProjects as Project[],
     isLoading,
     error,
     addProject,
     updateProject,
     deleteProject,
+    resetToDefaults,
+    projectsData,
   };
 }

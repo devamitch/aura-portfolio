@@ -4,6 +4,7 @@ import { MessageSquare, X, Send, Brain } from 'lucide-react';
 import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { LiveVoice } from './LiveVoice';
 import { useFirebaseProjects } from '../hooks/useFirebaseProjects';
+import { PROFILE_DATA } from '../data/projects';
 
 const ai = new GoogleGenAI({ apiKey: (process as any).env.GEMINI_API_KEY });
 
@@ -38,22 +39,27 @@ export function Chatbot() {
       // Construct context from projects (RAG-lite)
       const projectContext = projects.map(p => `
         Project: ${p.title}
-        Category: ${p.category}
+        Type: ${p.type}
+        Sector: ${p.sector}
         Location: ${p.location}
         Year: ${p.year}
         Description: ${p.description}
-        Tags: ${p.tags.join(', ')}
+        Stack: ${p.stack.join(', ')}
       `).join('\n---\n');
 
       const systemInstruction = `
-        You are a helpful assistant for Amit Chakraborty's portfolio website. 
-        Amit is a Principal Architect specializing in Architectural Design & Strategy.
+        You are a helpful assistant for ${PROFILE_DATA.nameFirst} ${PROFILE_DATA.nameLast}'s portfolio website. 
+        ${PROFILE_DATA.nameFirst} is a ${PROFILE_DATA.roles.join(', ')} currently based in ${PROFILE_DATA.location}.
         
-        Here is the context about Amit's projects:
+        Bio/Ethos: ${PROFILE_DATA.ethos.story}
+        
+        Tech Stack: ${PROFILE_DATA.techStack.join(', ')}
+        
+        Here is the context about ${PROFILE_DATA.nameFirst}'s projects:
         ${projectContext}
         
         Answer questions based on this context. If the user asks about something not in the context, you can use your general knowledge or the provided tools.
-        Be professional, concise, and highlight Amit's expertise.
+        Be professional, concise, and highlight ${PROFILE_DATA.nameFirst}'s expertise.
       `;
 
       // Determine if we need tools based on keywords (simple heuristic)
