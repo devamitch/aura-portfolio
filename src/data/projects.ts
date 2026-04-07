@@ -38,7 +38,7 @@ export const PROFILE_DATA = {
   roles: ["VP Engineering", "Principal Architect", "0-to-1 Builder"],
   location: "Kolkata, India",
   timezone: "IST (UTC+5:30)",
-  email: "amit98ch@gmail.com",
+  email: "amit@devamit.co.in",
   phone: "+91-9874173663",
   github: "https://github.com/devamitch",
   githubAlt: "https://github.com/techamit95ch",
