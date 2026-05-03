@@ -1,3 +1,22 @@
 User-agent: *
 Allow: /
-Sitemap: https://aura-portfolio.web.app/sitemap.xml
+Disallow: /api/
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Host: https://projectscopes.devamit.co.in
+
+Sitemap: https://projectscopes.devamit.co.in/sitemap.xml
